@@ -25,7 +25,7 @@ def ui_sterge_zi(cheltuieli, left): # functie ui pentru functia sterge_zi
     zi = input_zi(left+ "  ")
     if zi is not None:
         nr = sterge_zi(cheltuieli, zi)
-        if nr>0: print(left + cl.Fore.LIGHTGREEN_EX + f"{nr} + cheltuieli din ziua "+str(zi)+" au fost sterse!" + cl.Fore.RESET)
+        if nr>0: print(left + cl.Fore.LIGHTGREEN_EX + f"{nr} cheltuieli din ziua "+str(zi)+" au fost sterse!" + cl.Fore.RESET)
         else: print(left + cl.Fore.LIGHTRED_EX + "Nici o cheltuiala nu respecta proprietatea data!" + cl.Fore.RESET)
 
 def ui_sterge_interval(cheltuieli, left): # functie ui pentru functia sterge_interval
@@ -38,7 +38,7 @@ def ui_sterge_interval(cheltuieli, left): # functie ui pentru functia sterge_int
     if zi1 is None: return
     if zi1<zi2:
         nr = sterge_interval(cheltuieli, zi1, zi2)
-        if nr>0: print(left + cl.Fore.LIGHTGREEN_EX + f"{nr} cheltuieli care incep in ziua {zi1} si se termina in ziua {zi2} inclusiv au fost sterse!" + cl.Fore.RESET)
+        if nr>0: print(left + cl.Fore.LIGHTGREEN_EX + f"{nr} cheltuieli au fost sterse!" + cl.Fore.RESET)
         else: print(left + cl.Fore.LIGHTRED_EX + "Nici o cheltuiala nu respecta proprietatea data!" + cl.Fore.RESET)
     else: print(left + cl.Fore.LIGHTRED_EX + "Ziua de inceput trebuie sa fie inaintea zilei de sfarsit!" + cl.Fore.RESET)
 

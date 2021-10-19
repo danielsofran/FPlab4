@@ -28,6 +28,6 @@ def meniu_caut(cheltuieli): # submeniul cerintei 3
     meniu[0].colornume = cl.Fore.LIGHTCYAN_EX
     meniu += Optiune("2", "Cheltuielile efectuate înainte de o zi dată și mai mici decât o sumă", o2, cheltuieli, meniu.left)
     meniu[1].colornume = cl.Fore.LIGHTCYAN_EX
-    meniu += Optiune("3", "Cheltuielile de un anumit tip.", o3, cheltuieli, meniu.left)
+    meniu += Optiune("3", "Cheltuielile de un anumit tip", o3, cheltuieli, meniu.left)
     meniu[2].colornume = cl.Fore.LIGHTCYAN_EX
     meniu.run()
