@@ -153,10 +153,14 @@ class Meniu:
                 print()
                 return optiune
         else:
-            if s == "": self.interpret_input()
-            else:
-                print(self.left, self.errorcolor + self.errormessage + cl.Style.RESET_ALL, sep='')
-                self.interpret_input()
+            if self.clear_after_input==False:
+                if s == "": self.interpret_input()
+                else:
+                    print(self.left, self.errorcolor + self.errormessage + cl.Style.RESET_ALL, sep='')
+                    self.interpret_input()
+            elif self.clear_after_input==True:
+                if s == "": pass
+                else: print(self.left, self.errorcolor + self.errormessage + cl.Style.RESET_ALL, sep='')
 
     def run(self): # ruleaza meniul
         self.show_menu()
@@ -165,6 +169,11 @@ class Meniu:
             return
         while True:
             opt = self.interpret_input()
+            if opt is None:
+                opt = Optiune()
+                if self.clear_after_input:
+                    opt.clear_method = "clear after time"
+                else: opt.clear_method = "no clear"
             if opt.clear_method == "clear after time":
                 time.sleep(self.pause)
                 os.system('cls')

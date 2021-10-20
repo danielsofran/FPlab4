@@ -1,7 +1,7 @@
 from data import Cheltuiala
 from menu import *
 
-def input_cheltuiala(left=""): # citeste o cheltuiala
+def input_cheltuiala(left=""): # citeste o cheltuiala left = padding-left
     print(cl.Fore.RESET + left + "Ziua din luna: " + cl.Fore.LIGHTGREEN_EX, end='')
     zi = input()
     print(cl.Fore.RESET + left + "Suma: " + cl.Fore.LIGHTGREEN_EX, end='')
@@ -12,6 +12,7 @@ def input_cheltuiala(left=""): # citeste o cheltuiala
 
 def input_zi(left, msg="Introduceti ziua: "):  # obtine ziua de la utilizator sau None daca nu este introdusa corect
                                                # msg - mesajul afisat la introducere
+                                               # left - padding-left
                                                # functie ui
     print(left + "  " + cl.Fore.LIGHTGREEN_EX + msg + cl.Fore.RESET, end="")
     zi = input()
@@ -25,7 +26,7 @@ def input_zi(left, msg="Introduceti ziua: "):  # obtine ziua de la utilizator sa
     else:
         return zi
 
-def input_tip(left, msg="Introduceti tipul: "):
+def input_tip(left, msg="Introduceti tipul: "): # citeste tipul left = padding-left
     print(left + "  " + cl.Fore.LIGHTGREEN_EX + msg + cl.Fore.RESET, end="")
     tip = input()
     if tip in Cheltuiala.tipcheltuilei:
@@ -33,7 +34,7 @@ def input_tip(left, msg="Introduceti tipul: "):
     else:
         print(left + "  " + cl.Fore.LIGHTRED_EX + "Acest tip de cheltuieli nu exista!" + cl.Fore.RESET)
 
-def input_suma(left, msg="Introduceti suma: "):
+def input_suma(left, msg="Introduceti suma: "): # citeste suma left = padding-left
     print(left + "  " + cl.Fore.LIGHTGREEN_EX + "Introduceti suma: " + cl.Fore.RESET, end="")
     suma = input()
     try:
@@ -46,7 +47,7 @@ def input_suma(left, msg="Introduceti suma: "):
     else:
         return suma
 
-def output_cheltuieli(cheltuieli, left): # afiseaza lista cheltuielilor
+def output_cheltuieli(cheltuieli, left): # afiseaza lista cheltuielilor left = padding-left
     if len(cheltuieli)>0:
         print(left + cl.Fore.LIGHTMAGENTA_EX+"    Cheltuieli:"+cl.Fore.RESET)
         for chelt in cheltuieli:

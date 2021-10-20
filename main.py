@@ -4,14 +4,14 @@ from Cerinte.C1 import meniu_add
 from Cerinte.C2 import meniu_remove
 from Cerinte.C3 import meniu_caut
 
-def meniu_rapoarte(cheltuieli):
+def meniu_rapoarte(cheltuieli): #todo
     print(cheltuieli)
     pass
 
-def meniu_filtru(cheltuieli):
+def meniu_filtru(cheltuieli): #todo
     pass
 
-def undo(cheltuieli):
+def undo(cheltuieli): #todo
     pass
 
 def main(): # meniul principal

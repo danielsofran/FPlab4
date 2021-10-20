@@ -37,6 +37,9 @@ class Cheltuiala:
         self.tip = tip
 
     def verify_data(self, zi, suma, tip):  # verifica daca datele sunt valide
+        '''
+            :raise: ValueError
+        '''
         ex = ""  # string de exceptie
         if zi < 1 or zi > 31:
             ex += "Ziua trebuie sa fie cuprinsa intre 1 si 31!\n"
@@ -110,17 +113,17 @@ class Cheltuieli:
         if isinstance(other, Cheltuiala):
             self.lista.append(other)
             return self
-        elif isinstance(other, (Cheltuieli, list, tuple)):
+        elif isinstance(other, (Cheltuieli, list, tuple)): # sau mai multe
             for c in other:
                 if isinstance(c, Cheltuiala):
                     self.lista.append(c)
             return self
         return self
 
-    def append(self, other):
+    def append(self, other): # adauga o cheltuiala in lista
         if isinstance(other, Cheltuiala):
             self.lista.append(other)
-        elif isinstance(other, (Cheltuieli, list, tuple)):
+        elif isinstance(other, (Cheltuieli, list, tuple)): # sau mai multe
             for c in other:
                 if isinstance(c, Cheltuiala):
                     self.lista.append(c)
@@ -130,12 +133,12 @@ class Cheltuieli:
     def remove(self, value: Cheltuiala): # sterge din lista prima aparitie a valorii date
         self.lista.remove(value)
 
-    def __getitem__(self, item: int):
+    def __getitem__(self, item: int): # indexator
         if item <len(self):
             return self.lista[item]
         return None
 
-    def __setitem__(self, item: int, value: Cheltuiala):
+    def __setitem__(self, item: int, value: Cheltuiala): # indexator
         if item <len(self):
             self.lista[item].actualizare(value.zi, value.suma, value.tip)
 
@@ -158,6 +161,7 @@ class Cheltuieli:
                        valoarea - un literal specific
                                 - functia : poate fi o functie booleana de tip predicat
         :return: o lista de cheltuieli care respecta o anumita proprietate - prin functie sau daca au o valoare a unui membru
+        :rtype: list
         '''
         rez = Cheltuieli()
         for key, value in kvargs.items():
