@@ -26,47 +26,38 @@ class Optiune: # optiune a unui meniu
         for param in params:
             self.params.append(param)
 
-    #def __instancecheck__(self, instance): # verifica daca obiectul self este o Optiune
-    #    return isinstance(instance.nume, str) and isinstance(instance.comanda, str) and type(instance.functie_rulare)=="<class 'function'>"
-
     def __str__(self): # afiseaza optiunea
         return self.colorcomanda + self.comanda + cl.Style.RESET_ALL + " - " + self.colornume + self.nume + cl.Style.RESET_ALL
-
-    def show(self): # print
-        print(self.colorcomanda, self.comanda + cl.Style.RESET_ALL, " - ", self.colornume + self.nume + cl.Style.RESET_ALL)
 
     def ruleaza(self): # se apeleaza functia de rulare cu parametrii respectivi
         if len(self.params)>=1: self.functie_rulare(*self.params)
         else: self.functie_rulare()
 
-
 class Meniu:
     # meniul unei aplicatii si datele corespunzatoare
     def __init__(self, titlu="Meniu", clear_after_input=False, show_one_time=False):
-        self.variabile = dict()  # variabilele globale ale meniului, definite de utilizator
-        self.listaoptiuni = []
+        self.variabile = dict()                                     # variabilele globale ale meniului, definite de utilizator
+        self.listaoptiuni = []                                      # lista de Optiuni
         # parte design
-        self.show_one_time = show_one_time
-        self.clear_after_input = clear_after_input
-        self.titlu = titlu
-        self.culoaretitlu = cl.Fore.LIGHTMAGENTA_EX
-        self.inputmessage = "Introduceți o opțiune din meniu: "
-        self.inputmessagecolor = cl.Fore.LIGHTYELLOW_EX
-        self.inputcolor = cl.Fore.LIGHTRED_EX
-        self.errormessage = "Opțiunea nu a fost găsită!\n"
-        self.errorcolor = cl.Fore.LIGHTRED_EX
-        self.left = ""
-        self.pause = 3
-
-    def add(self, optiune: Optiune):
-        # adaugarea unei optiuni in meniu
-        self.listaoptiuni.append(optiune)
+        self.show_one_time = show_one_time                          # determina daca meniul se inchide automat dupa prima utilizare sau nu
+        self.clear_after_input = clear_after_input                  # determina, in cazul in care o optiune nu are o metoda de curatare setata
+                                                                    # stergerea sau nu a textului introdus, dupa stergere ramanand afisat doar meniul
+        self.titlu = titlu                                          # titlul meniului - nu contine spatii sau linii suplimentare
+        self.culoaretitlu = cl.Fore.LIGHTMAGENTA_EX                 # culoarea titlului
+        self.inputmessage = "Introduceți o opțiune din meniu: "     # mesajul de introducere a comenzii
+        self.inputmessagecolor = cl.Fore.LIGHTYELLOW_EX             # culoarea acestui mesaj
+        self.inputcolor = cl.Fore.LIGHTRED_EX                       # culoarea cu care utilizatorul va scrie comanda
+        self.errormessage = "Opțiunea nu a fost găsită!\n"          # mesajul in cazul in care optiunea nu e gasita
+        self.errorcolor = cl.Fore.LIGHTRED_EX                       # cuoarea cu care se afiseaza mesajul de eroare
+        self.left = ""                                              # spatiile din stanga meniului, care au efectul unui padding-left
+        self.pause = 3                                              # numarul de secunde de asteptare intre finalizarea activitatii si stergerea ecranului
 
     def add(self, comanda="*", nume="Opțiune", functie_rulare=lambda: 0, *params):
-        # adaugarea unei optiuni in meniu
+        # functie pentru adaugarea unei optiuni in meniu
         self.listaoptiuni.append(Optiune(comanda, nume, functie_rulare, *params))
 
     def __add__(self, optiune: Optiune):
+        # functie corelata operatorului '+'
         # adaugarea unei optiuni in meniu
         self.listaoptiuni.append(optiune)
         return self
@@ -76,23 +67,24 @@ class Meniu:
         # acestea pot fi folosite ca parametrii ai functiilor de rulare
         self.variabile[nume] = variabila
 
-    def __len__(self):
-        # numarul de optiuni
-        return len(self.listaoptiuni)
+    def __len__(self): return len(self.listaoptiuni) # numarul de optiuni
 
     def __getitem__(self, item):
-        # returneaza o optiune dupa:
-        #   indexul ei din lista
-        #   stringul de comanda
-        #   numele optiunii
+        '''
+        returneaza o optiune dupa:
+           indexul ei din lista
+           stringul de comanda
+           numele optiunii
+        :param item:
+        :return: optiune sau None in caz ca nu a fost gasita
+        '''
         if isinstance(item, int): return self.listaoptiuni[item]
         for optiune in self.listaoptiuni:
             if optiune.comanda == item or optiune.nume == item:
                 return optiune
-        return None
 
     def __setitem__(self, item, value):
-        # functia de rely
+        # functia de rely a unei optiuni din lista
         if isinstance(item, int):
             self.listaoptuini[item] = value
         elif isinstance(item, Optiune):
@@ -153,7 +145,10 @@ class Meniu:
                 print()
                 return optiune
         else:
-            if self.clear_after_input==False:
+            if self.show_one_time==True:
+                if s == "": pass
+                else: print(self.left, self.errorcolor + self.errormessage + cl.Style.RESET_ALL, sep='')
+            elif self.clear_after_input==False:
                 if s == "": self.interpret_input()
                 else:
                     print(self.left, self.errorcolor + self.errormessage + cl.Style.RESET_ALL, sep='')

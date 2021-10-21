@@ -1,3 +1,10 @@
+'''
+    modul de test al functiilor non-ui
+    - TestCheltuiala
+    - TestCheltuieli
+    - TestFunctii
+'''
+
 import data
 from Cerinte import C2
 

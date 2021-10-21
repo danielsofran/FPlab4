@@ -1,5 +1,12 @@
+# modul pentru interactiunea cu utilizatorul
+
 from data import Cheltuiala
 from menu import *
+
+def output_error(left, error): # afiseaza erorile din error, left = padding_left
+    lines = str(error).split('\n')
+    for line in lines:
+        print(left + "  " + cl.Fore.LIGHTRED_EX + line + cl.Fore.RESET)
 
 def input_cheltuiala(left=""):
     '''
@@ -8,13 +15,15 @@ def input_cheltuiala(left=""):
     :return: ziua, suma si tipul introduse
     :rtype: tuple
     '''
-    print(cl.Fore.RESET + left + "Ziua din luna: " + cl.Fore.LIGHTGREEN_EX, end='')
+    print(cl.Fore.RESET + left+"   " + "Ziua din luna: " + cl.Fore.LIGHTGREEN_EX, end='')
     zi = input()
-    print(cl.Fore.RESET + left + "Suma: " + cl.Fore.LIGHTGREEN_EX, end='')
+    print(cl.Fore.RESET + left+"   " + "Suma: " + cl.Fore.LIGHTGREEN_EX, end='')
     suma = input()
-    print(cl.Fore.RESET + left + "Tipul: " + cl.Fore.LIGHTGREEN_EX, end='')
+    print(cl.Fore.RESET + left+"   " + "Tipul: " + cl.Fore.LIGHTGREEN_EX, end='')
     tip = input()
-    return (zi, suma, tip)
+    try: c = Cheltuiala(zi, suma, tip)
+    except Exception as ex: output_error(left, ex)
+    else: return c
 
 def input_zi(left, msg="Introduceti ziua: "):
     '''
@@ -25,15 +34,9 @@ def input_zi(left, msg="Introduceti ziua: "):
     '''
     print(left + "  " + cl.Fore.LIGHTGREEN_EX + msg + cl.Fore.RESET, end="")
     zi = input()
-    try:
-        zi = int(zi)
-        assert zi > 0 and zi <= 31
-    except ValueError:
-        print(left + "  " + cl.Fore.LIGHTRED_EX + "Ziua trebuie sa fie un numar intreg!" + cl.Fore.RESET)
-    except AssertionError:
-        print(left + "  " + cl.Fore.LIGHTRED_EX + "Ziua trebuie sa fie un numar cuprins intre 1 si 31!" + cl.Fore.RESET)
-    else:
-        return zi
+    try: c = Cheltuiala(zi, 12, 'altele')
+    except Exception as ex: output_error(left, ex)
+    else: return c.zi
 
 def input_tip(left, msg="Introduceti tipul: "): # citeste tipul, left = padding-left, msg = mesajul afisat
     '''
@@ -44,10 +47,9 @@ def input_tip(left, msg="Introduceti tipul: "): # citeste tipul, left = padding-
         '''
     print(left + "  " + cl.Fore.LIGHTGREEN_EX + msg + cl.Fore.RESET, end="")
     tip = input()
-    if tip in Cheltuiala.tipcheltuilei:
-        return tip
-    else:
-        print(left + "  " + cl.Fore.LIGHTRED_EX + "Acest tip de cheltuieli nu exista!" + cl.Fore.RESET)
+    try: c = Cheltuiala(1, 1, tip)
+    except Exception as ex: output_error(left, ex)
+    else: return c.tip
 
 def input_suma(left, msg="Introduceti suma: "):
     '''
@@ -58,15 +60,9 @@ def input_suma(left, msg="Introduceti suma: "):
     '''
     print(left + "  " + cl.Fore.LIGHTGREEN_EX + msg + cl.Fore.RESET, end="")
     suma = input()
-    try:
-        suma = float(suma)
-        assert suma>0
-    except ValueError:
-        print(left + "  " + cl.Fore.LIGHTRED_EX + "Suma trebuie sa fie un numar intreg sau real!" + cl.Fore.RESET)
-    except AssertionError:
-        print(left + "  " + cl.Fore.LIGHTRED_EX + "Suma trebuie sa fie un numar strict pozitiv!" + cl.Fore.RESET)
-    else:
-        return suma
+    try: c = Cheltuiala(12, suma, 'altele')
+    except Exception as ex: output_error(left, ex)
+    else: return c.suma
 
 def output_cheltuieli(cheltuieli, left, errormsg="Nu exista astfel de cheltuieli adaugate!"):
     '''
@@ -85,4 +81,4 @@ def output_cheltuieli(cheltuieli, left, errormsg="Nu exista astfel de cheltuieli
             if s-int(s)<epsilon:
                 s = int(s)
             print(left + f"- In {cl.Fore.LIGHTYELLOW_EX}ziua{cl.Fore.RESET}: {cl.Fore.LIGHTGREEN_EX}{str(chelt.zi)}{cl.Fore.RESET}, {cl.Fore.LIGHTYELLOW_EX}suma{cl.Fore.RESET}: {cl.Fore.LIGHTGREEN_EX}{str(s)}{cl.Fore.RESET}, {cl.Fore.LIGHTYELLOW_EX}tipul{cl.Fore.RESET}: {cl.Fore.LIGHTGREEN_EX}{str(chelt.tip)}{cl.Fore.RESET};")
-    else: print(left + "  " + cl.Fore.LIGHTRED_EX + errormsg + cl.Fore.RESET)
+    else: output_error(left, errormsg)

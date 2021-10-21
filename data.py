@@ -36,8 +36,9 @@ class Cheltuiala:
         self.suma = suma
         self.tip = tip
 
-    def verify_data(self, zi, suma, tip):  # verifica daca datele sunt valide
+    def verify_data(self, zi, suma, tip):
         '''
+            verifica daca datele sunt valide
             :raise: ValueError
         '''
         ex = ""  # string de exceptie
@@ -142,7 +143,7 @@ class Cheltuieli:
         if item <len(self):
             self.lista[item].actualizare(value.zi, value.suma, value.tip)
 
-    def __eq__(self, other): # pentru a testa mai usor, verifica elementele si ordinea lor
+    def __eq__(self, other): # pentru a testa mai usor, verifica egalitatea elementelor si ordinea lor
         if isinstance(other, Cheltuieli):
             return self.lista == other.lista
         elif isinstance(other, list):

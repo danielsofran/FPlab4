@@ -1,3 +1,5 @@
+# cerinta 3
+
 from userio import *
 
 def o1(cheltuieli, left): # optiunea 1 a submeniului
@@ -10,9 +12,9 @@ def o2(cheltuiei, left): # optiunea 2 a submeniului
     zi = input_zi(left + "  ")
     if zi is None: return
     suma = input_suma(left + "  ")
-    if suma is None: return
-    l = cheltuiei.where(function=lambda chelt: chelt.zi<zi and chelt.suma<suma)
-    output_cheltuieli(l, left)
+    if suma is not None:
+        l = cheltuiei.where(function=lambda chelt: chelt.zi<zi and chelt.suma<suma)
+        output_cheltuieli(l, left)
 
 def o3(cheltuieli, left): # optiunea 3 a submeniului
     tip = input_tip(left + "  ")
