@@ -1,21 +1,21 @@
 from userio import *
 
 def o1(cheltuieli, left): # optiunea 1 a submeniului
-    suma = input_suma(left)
+    suma = input_suma(left + "  ")
     if suma is not None:
         l = cheltuieli.where(function=lambda chelt: chelt.suma>suma)
         output_cheltuieli(l, left)
 
 def o2(cheltuiei, left): # optiunea 2 a submeniului
-    zi = input_zi(left)
+    zi = input_zi(left + "  ")
     if zi is None: return
-    suma = input_suma(left)
+    suma = input_suma(left + "  ")
     if suma is None: return
     l = cheltuiei.where(function=lambda chelt: chelt.zi<zi and chelt.suma<suma)
     output_cheltuieli(l, left)
 
 def o3(cheltuieli, left): # optiunea 3 a submeniului
-    tip = input_tip(left)
+    tip = input_tip(left + "  ")
     if tip is not None:
         l = cheltuieli.where(tip=tip)
         output_cheltuieli(l, left)

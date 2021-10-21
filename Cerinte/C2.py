@@ -56,7 +56,7 @@ def meniu_remove(cheltuieli): # submeniul cerintei 2
     meniu = Meniu("\n\t  Selectați o opțiune de stergere:\n", clear_after_input=False, show_one_time=True)
     meniu.left = "\t"
     meniu.inputmessage = "Introduceți opțiunea: "
-    meniu += Optiune("1", "Toate cheltuielile dintr-o zi", ui_sterge_zi, cheltuieli, meniu.left )
+    meniu += Optiune("1", "Toate cheltuielile dintr-o zi", ui_sterge_zi, cheltuieli, meniu.left)
     meniu[0].colornume = cl.Fore.RED
     meniu += Optiune("2", "Cheltuielile dintr-un interval de timp", ui_sterge_interval, cheltuieli, meniu.left)
     meniu[1].colornume = cl.Fore.RED

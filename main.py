@@ -1,11 +1,10 @@
 from menu import *
-from data import *
+from data import Cheltuieli
 from Cerinte.C1 import meniu_add
 from Cerinte.C2 import meniu_remove
 from Cerinte.C3 import meniu_caut
 
 def meniu_rapoarte(cheltuieli): #todo
-    print(cheltuieli)
     pass
 
 def meniu_filtru(cheltuieli): #todo

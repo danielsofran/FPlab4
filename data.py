@@ -1,5 +1,5 @@
 """
-    modul in care se declara clasele care stocheaza datele si functiile lor
+    modul in care se declara clasele care stocheaza datele
 """
 
 class Cheltuiala:
@@ -25,7 +25,7 @@ class Cheltuiala:
         epsilon = 0.001
         try: return self.zi == other.zi and self.suma - other.suma < epsilon and self.tip == other.tip
         except Exception as ex:
-            print("ex")
+            raise Exception("Eroare la inegalitate")
             return False
 
     def actualizare(self, zi, suma, tip): # functie care actualizeaza datele despre cheltuiala
