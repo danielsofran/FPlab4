@@ -3,12 +3,9 @@ from data import Cheltuieli
 from Cerinte.C1 import meniu_add
 from Cerinte.C2 import meniu_remove
 from Cerinte.C3 import meniu_caut
-
-def meniu_rapoarte(cheltuieli): #todo
-    pass
-
-def meniu_filtru(cheltuieli): #todo
-    pass
+from Cerinte.C4 import meniu_rapoarte
+from Cerinte.C5 import meniu_filtru
+import test
 
 def undo(cheltuieli): #todo
     pass
@@ -27,7 +24,8 @@ def main(): # meniul principal
     meniu[3].colornume = cl.Fore.LIGHTCYAN_EX
     meniu[3].clear_method = "clear after input"
     meniu += Optiune("5", "Filtrare", meniu_filtru, l)
-    meniu[4].colornume = cl.Fore.RED
+    meniu[4].colornume = cl.Fore.LIGHTCYAN_EX
+    meniu[4].clear_method = "clear after input"
     meniu += Optiune("6", "Undo", undo, l)
     meniu[5].colornume = cl.Fore.BLUE
     meniu.run()

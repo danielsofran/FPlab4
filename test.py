@@ -7,6 +7,8 @@
 
 import data
 from Cerinte import C2
+from Cerinte.C5 import filtru1, filtru2
+from Cerinte.C4 import suma_per_tip, ziua_cu_suma_maxima
 
 class TestCheltuiala: # testeaza metodele clasei Cheltuiala
     def test_verify_ziua(self): # testeaza exceptiile aruncate pentru ziua gresita ca valoare
@@ -245,36 +247,117 @@ class TestCheltuieli: # testeaza metodele clasei cheltuieli
         self.test_str()
 
 class TestFunctii: # testeaza functiile de calcul folosite in modulele cerintelor
-    def test_sterge_zi(self):
-        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'telefon'), data.Cheltuiala(2, 10, 'telefon'), data.Cheltuiala(2, 30, 'altele'), data.Cheltuiala(3, 30, 'telefon'))
+    def test_sterge_zi(self): # testeaza functia sterge_zi din modulul C2.py
+        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'telefon'),
+                            data.Cheltuiala(2, 10, 'telefon'),
+                            data.Cheltuiala(2, 30, 'altele'),
+                            data.Cheltuiala(3, 30, 'telefon'))
         C2.sterge_zi(l, 2)
         assert len(l) == 1
         assert l[0] == data.Cheltuiala(3, 30, 'telefon')
-        l.append([data.Cheltuiala(2, 30, 'telefon'), data.Cheltuiala(2, 30, 'telefon'), data.Cheltuiala(2, 30, 'telefon'), data.Cheltuiala(2, 30, 'telefon')])
+        l.append([data.Cheltuiala(2, 30, 'telefon'),
+                  data.Cheltuiala(2, 30, 'telefon'),
+                  data.Cheltuiala(2, 30, 'telefon'),
+                  data.Cheltuiala(2, 30, 'telefon')])
         assert len(l) == 5
         C2.sterge_zi(l, 2)
         assert len(l) == 1
         assert l[0] == data.Cheltuiala(3, 30, 'telefon')
-    def test_sterge_interval(self):
-        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'telefon'), data.Cheltuiala(30, 10, 'telefon'), data.Cheltuiala(5, 30, 'altele'), data.Cheltuiala(9, 30, 'telefon'), data.Cheltuiala(11, 30, 'telefon'))
+    def test_sterge_interval(self): # testeaza functia sterge_interval din modulul C2.py
+        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'telefon'),
+                            data.Cheltuiala(30, 10, 'telefon'),
+                            data.Cheltuiala(5, 30, 'altele'),
+                            data.Cheltuiala(9, 30, 'telefon'),
+                            data.Cheltuiala(11, 30, 'telefon'))
         C2.sterge_interval(l, 1, 10)
         assert l == [data.Cheltuiala(30, 10, 'telefon'), data.Cheltuiala(11, 30, 'telefon')]
-        l.append([data.Cheltuiala(2, 30, 'telefon'), data.Cheltuiala(31, 30, 'telefon'), data.Cheltuiala(4, 30, 'telefon'), data.Cheltuiala(10, 30, 'telefon')])
+        l.append([data.Cheltuiala(2, 30, 'telefon'),
+                  data.Cheltuiala(31, 30, 'telefon'),
+                  data.Cheltuiala(4, 30, 'telefon'),
+                  data.Cheltuiala(10, 30, 'telefon')])
         C2.sterge_interval(l, 1, 10)
         assert l == [data.Cheltuiala(30, 10, 'telefon'), data.Cheltuiala(11, 30, 'telefon'), data.Cheltuiala(31, 30, 'telefon')]
-    def test_sterge_tip(self):
-        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'telefon'), data.Cheltuiala(2, 10, 'telefon'), data.Cheltuiala(2, 30, 'altele'), data.Cheltuiala(3, 30, 'telefon'))
+    def test_sterge_tip(self): # testeaza functia sterge_tip din modulul C2.py
+        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'telefon'),
+                            data.Cheltuiala(2, 10, 'telefon'),
+                            data.Cheltuiala(2, 30, 'altele'),
+                            data.Cheltuiala(3, 30, 'telefon'))
         C2.sterge_tip(l, 'telefon')
         assert l == [data.Cheltuiala(2, 30, 'altele')]
-        l.append([data.Cheltuiala(3, 4, 'intretinere'), data.Cheltuiala(2, 30, 'mancare'), data.Cheltuiala(2, 30, 'mancare'), data.Cheltuiala(2, 30, 'mancare'), data.Cheltuiala(2, 30, 'mancare')])
+        l.append([data.Cheltuiala(3, 4, 'intretinere'),
+                  data.Cheltuiala(2, 30, 'mancare'),
+                  data.Cheltuiala(2, 30, 'mancare'),
+                  data.Cheltuiala(2, 30, 'mancare'),
+                  data.Cheltuiala(2, 30, 'mancare')])
         assert len(l) == 6
         C2.sterge_tip(l, 'mancare')
         assert len(l) == 2
         assert l == [data.Cheltuiala(2, 30, 'altele'), data.Cheltuiala(3, 4, 'intretinere')]
-    def __init__(self):
+    def test_filtru1(self): # testeaza functia filtru1 din modulul C5.py
+        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'mancare'),
+                            data.Cheltuiala(30, 10, 'telefon'),
+                            data.Cheltuiala(5, 30, 'altele'),
+                            data.Cheltuiala(9, 30, 'intretinere'),
+                            data.Cheltuiala(11, 30, 'telefon'))
+        assert filtru1(l, 'telefon') == [data.Cheltuiala(2, 30, 'mancare'),
+                                        data.Cheltuiala(5, 30, 'altele'),
+                                        data.Cheltuiala(9, 30, 'intretinere')]
+        assert filtru1(l, 'altele') == data.Cheltuieli(data.Cheltuiala(2, 30, 'mancare'),
+                                                        data.Cheltuiala(30, 10, 'telefon'),
+                                                        data.Cheltuiala(9, 30, 'intretinere'),
+                                                        data.Cheltuiala(11, 30, 'telefon'))
+        assert filtru1(l, 'mancare') == data.Cheltuieli(data.Cheltuiala(30, 10, 'telefon'),
+                                                        data.Cheltuiala(5, 30, 'altele'),
+                                                        data.Cheltuiala(9, 30, 'intretinere'),
+                                                        data.Cheltuiala(11, 30, 'telefon'))
+        assert filtru1(l, 'intretinere') == data.Cheltuieli(data.Cheltuiala(2, 30, 'mancare'),
+                                                            data.Cheltuiala(30, 10, 'telefon'),
+                                                            data.Cheltuiala(5, 30, 'altele'),
+                                                            data.Cheltuiala(11, 30, 'telefon'))
+    def test_filtru2(self): # testeaza functia filtru1 din modulul C5.py
+        l = data.Cheltuieli(data.Cheltuiala(2, 2, 'mancare'),
+                            data.Cheltuiala(30, 10, 'telefon'),
+                            data.Cheltuiala(5, 30, 'altele'),
+                            data.Cheltuiala(9, 50, 'intretinere'),
+                            data.Cheltuiala(11, 100, 'telefon'))
+        assert filtru2(l, 1000) == []
+        assert filtru2(l, 100) == data.Cheltuieli(data.Cheltuiala(11, 100, 'telefon'))
+        assert filtru2(l, 40) == data.Cheltuieli(data.Cheltuiala(9, 50, 'intretinere'),
+                                                 data.Cheltuiala(11, 100, 'telefon'))
+        assert filtru2(l, 9) == data.Cheltuieli(data.Cheltuiala(30, 10, 'telefon'),
+                                                data.Cheltuiala(5, 30, 'altele'),
+                                                data.Cheltuiala(9, 50, 'intretinere'),
+                                                data.Cheltuiala(11, 100, 'telefon'))
+    def test_suma_per_tip(self):
+        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'mancare'),
+                            data.Cheltuiala(30, 10.99, 'telefon'),
+                            data.Cheltuiala(5, 30, 'altele'),
+                            data.Cheltuiala(9, 11, 'intretinere'),
+                            data.Cheltuiala(11, 39.01, 'telefon'),
+                            data.Cheltuiala(2, 40, 'mancare'))
+        assert suma_per_tip(l, 'telefon') == 50
+        assert suma_per_tip(l, 'mancare') == 70
+        assert suma_per_tip(l, 'altele') == 30
+        assert suma_per_tip(l, 'intretinere') == 11
+        assert suma_per_tip(l, 'imbracaminte') == 0
+    def test_zi_cu_suma_maxima(self):
+        l = data.Cheltuieli(data.Cheltuiala(2, 30, 'mancare'),
+                            data.Cheltuiala(30, 10.99, 'telefon'),
+                            data.Cheltuiala(5, 30, 'altele'),
+                            data.Cheltuiala(9, 11, 'intretinere'),
+                            data.Cheltuiala(11, 39.01, 'telefon'),
+                            data.Cheltuiala(2, 40, 'mancare'))
+        assert ziua_cu_suma_maxima(l) == 2
+        l.append(data.Cheltuiala(30, 1000, 'mancare'))
+        assert ziua_cu_suma_maxima(l) == 30
+    def __init__(self): # apeleaza toate testele
         self.test_sterge_zi()
         self.test_sterge_interval()
         self.test_sterge_tip()
+        self.test_filtru1()
+        self.test_filtru2()
+        self.test_suma_per_tip()
+        self.test_zi_cu_suma_maxima()
 
 TestCheltuiala()
 TestCheltuieli()
