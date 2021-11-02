@@ -1,5 +1,8 @@
 """
     modul in care se declara clasele care stocheaza datele
+    - Cheltuiala
+    - Cheltuieli
+    - Istoric
 """
 
 class Cheltuiala:
@@ -83,25 +86,56 @@ class Cheltuiala:
         epsilon = 0.0000001
         if s-int(s)<epsilon:
             s = int(s)
+        return f"{self.zi} {s} {self.tip}"
+
+    def show(self): # convertirea la un sir inteligibil dpdv al utilizatorului
+        s = self.suma
+        epsilon = 0.0000001
+        if s - int(s) < epsilon:
+            s = int(s)
         return f"Cheltuiala in ziua: {str(self.zi)}, suma: {str(s)}, tipul: {str(self.tip)}"
+
+    @classmethod
+    def fromStr(cls, sir): # untested
+        '''
+        :param sir: sirul dat care codifica o cheltuiala
+        :return: cheltuiala
+        :rtype: Cheltuiala
+        :raise: ValueError - valorile introduse sunt gresite
+        :raise: TypeError - tipurile aferente sunt gresite
+        :raise: IndexError - sirul dat nu contine destule informatii
+        '''
+        try:
+            fields = sir.split(' ')
+            assert len(fields)==3
+        except: raise IndexError("Sir incorect ca sa poata fi transformat in cheltuiala!")
+        return cls(fields[0], fields[1], fields[2])
 
 class Cheltuieli:
     '''
         lista - lista de cheltuileli
+        istoric - istoricul cheltuielilor
     '''
     def __init__(self, *params): # adauga parametrii de tip Cheltuiala si liste de cheltuieli, ignorandu-i pe ceilalti
         self.lista = []
+        self.istoric = Istoric()
+        index = 0
         for param in params:
             if isinstance(param, list) or isinstance(param, tuple):
                 for elem in param:
                     if isinstance(elem, Cheltuiala):
                         self.lista.append(elem)
+                        index = index + 1
+                        #self.istoric += elem
             elif isinstance(param, Cheltuiala):
                 self.lista.append(param)
+                index = index + 1
+                #self.istoric += param
 
-    def __len__(self): return len(self.lista) # determina numarul de cheltuieli
+    def __len__(self): # determina numarul de cheltuieli
+        return len(self.lista)
 
-    def __iter__(self): # returneaza iteratorul catre primul element din lista, functia va fi folosita in parcurgerea for
+    def __iter__(self):# face interabila clasa
         return iter(self.lista)
 
     def index(self, value: Cheltuiala): # gaseste primul index al valorii date in lista, sau -1 daca nu este gasita
@@ -135,7 +169,7 @@ class Cheltuieli:
         self.lista.remove(value)
 
     def __getitem__(self, item: int): # indexator
-        if item <len(self):
+        if item < len(self):
             return self.lista[item]
         return None
 
@@ -164,30 +198,173 @@ class Cheltuieli:
         :return: o lista de cheltuieli care respecta o anumita proprietate - prin functie sau daca au o valoare a unui membru
         :rtype: list
         '''
-        rez = Cheltuieli()
+        rez = []
         for key, value in kvargs.items():
             if (key=='zi' or key=='ziua') and isinstance(value, int):
                 for c in self.lista:
                     if c.zi == value:
-                        rez+=c
+                        rez.append(c)
             elif key=='suma' and (isinstance(value, int) or isinstance(value, float)):
                 for c in self.lista:
                     epsilon = 0.0000001
                     if abs(c.suma - value)<epsilon:
-                        rez+=c
+                        rez.append(c)
             elif key=='tip' and isinstance(value, str):
                 for c in self.lista:
                     if c.tip == value:
-                        rez+=c
+                        rez.append(c)
             elif key=='function' and str(type(value)) == "<class 'function'>":
                 for c in self.lista:
                     if (value(c)):
-                        rez += c
+                        rez.append(c)
                 return rez
         return rez
 
     def __str__(self): # conversia la sir de caractere, scop in testare
         rez=""
         for c in self.lista:
-            rez += str(c) + '\n'
+            rez += str(c) + "*"
+        return rez
+
+    def __executestring(self, s): # ruleaza operatia codata in sirul s
+        tasks = s.split('*')
+        for task in tasks:
+            if task[0] == '+':
+                self.append(Cheltuiala.fromStr(task[2:]))
+            elif task[0] == '-':
+                self.lista.reverse()
+                self.lista.remove(Cheltuiala.fromStr(task[2:]))
+                self.lista.reverse()
+            elif task[0] == '~':
+                i = task.index('^')
+                c1 = Cheltuiala.fromStr(task[2:i])
+                c2 = Cheltuiala.fromStr(task[i + 1:])
+                i = self.index(c1)
+                self[i] = c2
+
+    def undo(self): # reface ultima adaugare/stergere/actualizare
+        s = self.istoric.undo() # obtinem stringul ce trebuie sa il efectuam
+        self.__executestring(s)
+
+    def redo(self): # reface ultima operatie anulata
+        task = self.istoric.redo()
+        self.__executestring(task)
+
+class Istoric:
+    '''
+        memoreaza activitatile efectuate
+        tasklist - lista activitatilor efectuate
+                 - este o lista de siruri de caractere de forma "+ 1 1 altele*+ 10 20 mancare*- 1 1 altele"
+                 - + inseamna adaugare
+                 - - inseamna stergere
+                 - ~ inseamna actualizare
+        redotasklist - lista activitatilor
+    '''
+    def __init__(self): # constructor
+        self.tasklist = []
+        self.redotasklist = []
+        #self.index = 0
+
+    def __add__(self, other): # adaugarea unei activitati
+        #self.index = self.index + 1
+        self.redotasklist.clear()
+        if isinstance(other, str): # sir dat
+            self.tasklist.append(other)
+        elif isinstance(other, Cheltuiala): # o cheltuiala
+            self.tasklist.append("+ " + str(other))
+        elif isinstance(other, (Cheltuieli, list)): # mai multe cheltuieli
+            s = ""
+            for c in other: # parcurg cheltuielile
+                s += "+ " + str(c) + "*"
+            self.tasklist.append(s)
+        else: raise Exception("Eroare la adaugare!")
+        return self
+
+    def __sub__(self, other): # stergerea unei activitati
+        #self.index = self.index + 1
+        self.redotasklist.clear()
+        if isinstance(other, str): # sir dat
+            self.tasklist.append(other)
+        elif isinstance(other, Cheltuiala): # o cheltuiala
+            self.tasklist.append("- " + str(other))
+        elif isinstance(other, (Cheltuieli, list)): # mai multe cheltuieli
+            s = ""
+            for c in other: # parcurg cheltuielile
+                s += "- " + str(c) + "*"
+            s[-1] = ""
+            print(s)
+            self.tasklist.append(s)
+        else: raise Exception("Eroare la stergere!")
+        return self
+
+    def append(self, type: str, other): # adauga un task in lista
+        self.redotasklist.clear()
+        if isinstance(other, str): # sir dat
+            self.tasklist.append(type + " " + other)
+        elif isinstance(other, Cheltuiala): # o cheltuiala
+            self.tasklist.append(type + " " + str(other))
+        elif isinstance(other, (Cheltuieli, list)): # mai multe cheltuieli
+            s = ""
+            for c in other: # parcurg cheltuielile
+                s += type + " " + str(c) + "*"
+            s = s[:-1]
+            self.tasklist.append(s)
+        else: raise Exception("Eroare la append!")
+
+    def __len__(self): # numarul de activitati memorate
+        return len(self.tasklist)
+
+    def undo(self):
+        '''
+        va determina operatiile inverse ultimei operatii efectuate
+        + zi suma tip -> - zi suma tip
+        - zi suma tip -> + zi suma tip
+        ~ zi1 suma1 tip1^zi2 suma2 tip2 -> ~ zi2 suma2 tip2^zi1 suma1 tip1
+        :return: lista operatiilor care se executa pentru ca operatia sa fie corecta
+        :raise: IndexError daca nu exista task-uri in lista
+        :rtype: str1
+        '''
+        if len(self.tasklist) == 0: raise IndexError("Nu exista cheltuieli in lista! Operatia de Undo nu se poate efectua!")
+        if self.tasklist[-1][0] == '+' or self.tasklist[-1][0] == '-':
+            ops = list(self.tasklist[-1]) # ultimele operatii efectuate, ca lista de caractere
+            for i in range(len(ops)):
+                if ops[i] == '+': ops[i] = '-'
+                elif ops[i] == '-': ops[i] = '+'
+            self.redotasklist.append(self.tasklist.pop())         # stergem task-ul din lista, deoarece acesta se va efectua invers
+            return "".join(ops)
+        elif self.tasklist[-1][0] == '~':
+            s = self.tasklist[-1]
+            si = s.index('^')
+            c1 = s[2:si]
+            c2 = s[si+1:]
+            self.redotasklist.append(self.tasklist.pop())         # stergem task-ul din lista, si il adaugam la lista de redo
+            return f"~ {c2}^{c1}"
+        else: raise IndexError("Nu exista cheltuieli in lista! Operatia de Undo nu se poate efectua!")
+
+    def redo(self):
+        """
+        reface ultima operatie anulata
+        :raise: IndexError in cazul in care nu exista operatii ce pot fi refacute
+        :return:
+        """
+        if len(self.redotasklist) <= 0:
+            raise IndexError("Redo-ul nu se poate efectua daca nu exista operatii de undo precedente!")
+        task = self.redotasklist.pop()
+        self.tasklist.append(task) # acest task poate fi anulat ulterior
+        return task
+
+    def showlast(self):
+        if len(self)<=0: raise IndexError
+        tasks = self.tasklist[-1].split('*')
+        rez=""
+        for task in tasks:
+            if task[0] == '+':
+                rez+=f"- sterge cheltuiala in ziua {Cheltuiala.fromStr(task[2:]).zi}, suma {Cheltuiala.fromStr(task[2:]).suma}, tipul {Cheltuiala.fromStr(task[2:]).tip}\n"
+            elif task[0] == '-':
+                rez+=f"- adauga cheltuiala in ziua {Cheltuiala.fromStr(task[2:]).zi}, suma {Cheltuiala.fromStr(task[2:]).suma}, tipul {Cheltuiala.fromStr(task[2:]).tip}\n"
+            elif task[0] == '~':
+                i = task.index('^')
+                c1 = Cheltuiala.fromStr(task[2:i])
+                c2 = Cheltuiala.fromStr(task[i + 1:])
+                rez += f"- actualizeaza cheltuiala {c2} cu cheltuiala {c1}\n"
         return rez

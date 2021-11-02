@@ -10,6 +10,7 @@ def sterge_zi(lista, zi:int):
     :return: numarul de elemente sterse
     '''
     l = lista.where(zi=zi)
+    lista.istoric.append('-', l)
     for elem in l:
         lista.remove(elem)
     return len(l)
@@ -23,6 +24,7 @@ def sterge_interval(lista, zi_inceput:int, zi_sfarsit:int):
     :return: numarul de elemente sterse
     '''
     l = lista.where(function= lambda chelt: chelt.zi>=zi_inceput and chelt.zi<=zi_sfarsit)
+    lista.istoric.append('-', l)
     for elem in l:
         lista.remove(elem)
     return len(l)
@@ -35,6 +37,7 @@ def sterge_tip(lista, tip:str):
     :return: numarul de elemente sterse
     '''
     l = lista.where(tip=tip)
+    lista.istoric.append('-', l)
     for elem in l:
         lista.remove(elem)
     return len(l)

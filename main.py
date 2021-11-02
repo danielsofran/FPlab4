@@ -1,3 +1,4 @@
+import userio
 from menu import *
 from data import Cheltuieli
 from Cerinte.C1 import meniu_add
@@ -5,13 +6,11 @@ from Cerinte.C2 import meniu_remove
 from Cerinte.C3 import meniu_caut
 from Cerinte.C4 import meniu_rapoarte
 from Cerinte.C5 import meniu_filtru
+from Cerinte.C6 import undo, redo
 import test
 
-def undo(cheltuieli): #todo
-    pass
-
 def main(): # meniul principal
-    meniu = Meniu("\n\tCheltuieli de familie\n", clear_after_input=True)
+    meniu = Meniu("\n\tCHELTUIELI DE FAMILIE\n", clear_after_input=True)
     l = Cheltuieli()
     meniu += Optiune("1", "Adăugare", meniu_add, l)
     meniu[0].colornume = cl.Fore.LIGHTGREEN_EX
@@ -28,6 +27,9 @@ def main(): # meniul principal
     meniu[4].clear_method = "clear after input"
     meniu += Optiune("6", "Undo", undo, l)
     meniu[5].colornume = cl.Fore.BLUE
+    #meniu[5].clear_method = "clear after input"
+    meniu += Optiune("7", "Redo", redo, l)
+    meniu[6].colornume = cl.Fore.BLUE
     meniu.run()
 
 main()

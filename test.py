@@ -162,22 +162,23 @@ class TestCheltuiala: # testeaza metodele clasei Cheltuiala
         except ValueError: pass
     def test_str(self): # testeaza conversia la str
         c = data.Cheltuiala(2, 10, 'intretinere')
-        assert str(c) == "Cheltuiala in ziua: 2, suma: 10, tipul: intretinere"
+        assert str(c) == "2 10 intretinere"
         c = data.Cheltuiala(10, 9.99, 'telefon')
-        assert str(c) == "Cheltuiala in ziua: 10, suma: 9.99, tipul: telefon"
+        assert str(c) == "10 9.99 telefon"
         c = data.Cheltuiala(25, 100.34, 'mancare')
-        assert str(c) == "Cheltuiala in ziua: 25, suma: 100.34, tipul: mancare"
+        assert str(c) == "25 100.34 mancare"
         c = data.Cheltuiala(30, 2000.2, 'altele')
-        assert str(c) == "Cheltuiala in ziua: 30, suma: 2000.2, tipul: altele"
+        assert str(c) == "30 2000.2 altele"
 
     def __init__(self):# testeaza functiile clasei cheltuieli
         # constructori corecti
         c1 = data.Cheltuiala(2, 23.15, "mancare")
         c2 = data.Cheltuiala(29, 12, "telefon")
+        c3 = data.Cheltuiala.fromStr("2 30 altele")
         # testam get-ul field-urilor
         assert c1.zi == 2
         assert c2.suma == 12
-        assert c1.tip == 'mancare'
+        assert c3.tip == 'altele'
         # teste pentru date introduse gresit
         self.test_verify_ziua() # ziua introdusa gresit ca valoare
         self.test_verify_suma() # suma introdusa gresit ca valoare
@@ -236,9 +237,9 @@ class TestCheltuieli: # testeaza metodele clasei cheltuieli
         assert l.where(function=lambda c: c.zi<=10) == [l[0], l[1], l[3], l[4]]
     def test_str(self): # testeaza functia str
         l = data.Cheltuieli(data.Cheltuiala(1, 2.3, 'telefon'), data.Cheltuiala(25, 117.7, 'mancare'))
-        assert str(l) == str(l[0])+'\n'+str(l[1])+'\n'
+        assert str(l) == str(l[0])+'*'+str(l[1])+'*'
         l += data.Cheltuieli(data.Cheltuiala(1, 2.3, 'telefon'), data.Cheltuiala(25, 117.7, 'mancare'))
-        assert str(l) == str(l[0])+'\n'+str(l[1])+'\n'+str(l[2])+'\n'+str(l[3])+'\n'
+        assert str(l) == str(l[0])+'*'+str(l[1])+'*'+str(l[2])+'*'+str(l[3])+'*'
     def __init__(self):
         # rulam testele definite anterior
         self.test_init()
@@ -359,6 +360,63 @@ class TestFunctii: # testeaza functiile de calcul folosite in modulele cerintelo
         self.test_suma_per_tip()
         self.test_zi_cu_suma_maxima()
 
+class TestIstoric:
+    def test_undo_str(self):
+        ist = data.Istoric()
+        assert isinstance(ist, data.Istoric)
+        ist += "+ 1 1 altele"
+        assert ist.tasklist[-1] == "+ 1 1 altele"
+        assert ist.undo() == "- 1 1 altele"
+        assert len(ist) == 0
+        ist += "+ 1 1 altele"
+        ist += "+ 2 1 altele"
+        ist += "+ 3 1 altele"
+        ist += "+ 4 1 altele"
+        ist += "+ 5 1 altele*+6 2 mancare*+5 3 altele"
+        ist += "- 5 1 altele"
+        assert ist.undo() == "+ 5 1 altele"
+        assert ist.undo() == "- 5 1 altele*-6 2 mancare*-5 3 altele"
+        ist += "~ 13 20.4 altele^12 40 mancare"
+        assert ist.undo() == "~ 12 40 mancare^13 20.4 altele"
+
+    def test_add_remove(self):
+        l = data.Cheltuieli(
+            data.Cheltuiala(1, 1, "altele"),
+            data.Cheltuiala(2, 2, "mancare"),
+        )
+        l.remove(data.Cheltuiala(1, 1, "altele"))
+        l.istoric -= data.Cheltuiala(1, 1, "altele")
+
+        l.append(data.Cheltuiala(10, 10, "altele"))
+        l.istoric += data.Cheltuiala(10, 10, "altele")
+        assert len(l.istoric) == 2
+        assert l.istoric.tasklist[-1] == f"+ 10 10 altele"
+        l.undo()
+        assert l.istoric.tasklist[-1] == f"- 1 1 altele"
+        l.undo()
+        assert len(l.istoric) == 0
+        try:
+            l.undo()
+            assert False
+        except IndexError: pass
+        l.append(data.Cheltuiala(10, 10, "altele"))
+        l.istoric += data.Cheltuiala(10, 10, "altele")
+
+        l[0].actualizare(1, 1, "mancare")
+        l.istoric.append("~", "10 10 altele^1 1 mancare")
+        assert l[0] == data.Cheltuiala(1, 1, "mancare")
+        l.undo()
+        assert l[0] == data.Cheltuiala(10, 10, "altele")
+        assert len(l.istoric) == 1
+        l.undo()
+        assert len(l.lista) == 2
+
+    def __init__(self):
+        self.test_undo_str()
+        self.test_add_remove()
+
+
 TestCheltuiala()
 TestCheltuieli()
 TestFunctii()
+TestIstoric()

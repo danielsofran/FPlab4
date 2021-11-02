@@ -31,7 +31,13 @@ def filtru2(cheltuieli, suma):
             rez += chelt
     return rez
 
-def filtru1_ui(cheltuieli, left): # functie ui pentru filtrul1
+def filtru1_ui(cheltuieli, left):
+    '''
+    functie ui pentru filtrul1
+    :param cheltuieli: o lista de cheltuieli
+    :param left: numarul de spatii din stanga afisarilor
+    :return: None
+    '''
     tip = input_tip(left, "Introduceti tipul care urmeaza sa fie eliminat: ")
     if tip is not None:
         l = filtru1(cheltuieli, tip)

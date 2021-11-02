@@ -5,8 +5,10 @@ from userio import *
 def adauga_ui(cheltuieli, left=""): # adauga o cheltuiala valida in lista, left = padding-left
     c = input_cheltuiala(left)
     if c is None: return
+    cheltuieli.istoric += c
     cheltuieli.append(c)
-    print(left + cl.Fore.LIGHTGREEN_EX + str(c) + " s-a adaugat cu succes!" + cl.Fore.RESET)
+    cheltuieli.istoric.append("+", c)
+    print(left + cl.Fore.LIGHTGREEN_EX + c.show() + " s-a adaugat cu succes!" + cl.Fore.RESET)
 
 def actualizare_ui(cheltuieli, left=""): # actualizeaza o cheltuiala din lista, left = padding-left
     print(cl.Fore.GREEN +"\n"+ left + "  Introduceti o cheltuiala existenta: ")
@@ -17,6 +19,7 @@ def actualizare_ui(cheltuieli, left=""): # actualizeaza o cheltuiala din lista, 
         print(cl.Fore.GREEN + "\n"+ left + "  Introduceti noua cheltuiala:")
         noua = input_cheltuiala(left)
         if noua is not None:
+            cheltuieli.istoric.append("~", f"{cheltuieli[index]}^{noua}")
             cheltuieli[index].actualizare(noua.zi, noua.suma, noua.tip)
             print(left + cl.Fore.LIGHTGREEN_EX + "Cheltuiala introdusa s-a adaugat cu succes!")
     else: output_error(left, "Cheltuiala introdusa nu a fost gasita!")
