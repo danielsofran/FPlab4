@@ -36,6 +36,7 @@ def sterge_tip(lista, tip:str):
     :param tip:
     :return: numarul de elemente sterse
     '''
+    if not tip in Cheltuiala.tipcheltuilei: raise ValueError("Tipul de cheltuieli introdus nu exista!")
     l = lista.where(tip=tip)
     lista.istoric.append('-', l)
     for elem in l:

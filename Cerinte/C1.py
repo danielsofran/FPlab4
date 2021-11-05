@@ -5,7 +5,7 @@ from userio import *
 def adauga_ui(cheltuieli, left=""): # adauga o cheltuiala valida in lista, left = padding-left
     c = input_cheltuiala(left)
     if c is None: return
-    cheltuieli.istoric += c
+    #cheltuieli.istoric += c
     cheltuieli.append(c)
     cheltuieli.istoric.append("+", c)
     print(left + cl.Fore.LIGHTGREEN_EX + c.show() + " s-a adaugat cu succes!" + cl.Fore.RESET)

@@ -223,7 +223,7 @@ class Cheltuieli:
     def __str__(self): # conversia la sir de caractere, scop in testare
         rez=""
         for c in self.lista:
-            rez += str(c) + "*"
+            rez += str(c) + "\n"
         return rez
 
     def __executestring(self, s): # ruleaza operatia codata in sirul s

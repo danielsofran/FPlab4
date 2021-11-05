@@ -1,4 +1,3 @@
-import userio
 from menu import *
 from data import Cheltuieli
 from Cerinte.C1 import meniu_add
@@ -28,8 +27,8 @@ def main(): # meniul principal
     meniu += Optiune("6", "Undo", undo, l)
     meniu[5].colornume = cl.Fore.BLUE
     #meniu[5].clear_method = "clear after input"
-    meniu += Optiune("7", "Redo", redo, l)
-    meniu[6].colornume = cl.Fore.BLUE
+    #meniu += Optiune("7", "Redo", redo, l)
+    #meniu[6].colornume = cl.Fore.BLUE
     meniu.run()
 
 main()

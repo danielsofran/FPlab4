@@ -237,9 +237,10 @@ class TestCheltuieli: # testeaza metodele clasei cheltuieli
         assert l.where(function=lambda c: c.zi<=10) == [l[0], l[1], l[3], l[4]]
     def test_str(self): # testeaza functia str
         l = data.Cheltuieli(data.Cheltuiala(1, 2.3, 'telefon'), data.Cheltuiala(25, 117.7, 'mancare'))
-        assert str(l) == str(l[0])+'*'+str(l[1])+'*'
+        sep = '\n'
+        assert str(l) == str(l[0])+sep+str(l[1])+sep
         l += data.Cheltuieli(data.Cheltuiala(1, 2.3, 'telefon'), data.Cheltuiala(25, 117.7, 'mancare'))
-        assert str(l) == str(l[0])+'*'+str(l[1])+'*'+str(l[2])+'*'+str(l[3])+'*'
+        assert str(l) == str(l[0])+sep+str(l[1])+sep+str(l[2])+sep+str(l[3])+sep
     def __init__(self):
         # rulam testele definite anterior
         self.test_init()
